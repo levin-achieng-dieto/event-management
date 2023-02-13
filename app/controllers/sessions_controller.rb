@@ -1,19 +1,19 @@
 class SessionsController < ApplicationController
-    skip_before_action :authorized, only: :login
+    # skip_before_action :authorized, only: :login
 
     def login
         admin = Admin.find_by(username: params[:username])
-        if admin&.authenticate(params[:password])
+        if admin &.authenticate(params[:password])
             session[:admin_id] = admin.id
             render json: admin, status: :created
         else
-            render json: {"Invalid username or password"}, status: :unauthorized
+            render json: {errors: ["Invalid username or password"]}, status: :unauthorized
         end
     end
 
     def logout
         admin = Admin.find_by(id: session[:admin_id])
-        if user
+        if admin
             session.delete :admin_id
             head :no_content
         else
